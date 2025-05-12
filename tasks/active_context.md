@@ -23,7 +23,8 @@
   * Completed:
     * User, Role, Team models and migrations, including pivot tables and relationships.
     * Developed `RoleRepository` and `UserRepository` with interfaces and implementations.
-  * Next sub-task: "Develop `AuthService` for registration, login, logout."
+    * Developed `AuthService` for registration, login, logout functionality.
+  * Next sub-task: "Implement RBAC (Role-Based Access Control) middleware/policies."
 
 **Decisions Made:**
 

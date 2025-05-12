@@ -26,7 +26,7 @@
 * **[DONE]** Implement Team model and migration.
 * **[DONE]** Implement pivot tables for user_roles, team_members.
 * **[DONE]** Develop `RoleRepository` and `UserRepository`.
-* **[TODO]** Develop `AuthService` for registration, login, logout.
+* **[DONE]** Develop `AuthService` for registration, login, logout.
 * **[TODO]** Implement RBAC (Role-Based Access Control) middleware/policies.
   * **[TODO]** Define core permissions (e.g., `create-task`, `edit-project`, `manage-users`).
   * **[TODO]** Assign permissions to roles.
