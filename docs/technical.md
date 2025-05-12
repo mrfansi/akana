@@ -242,7 +242,7 @@ CREATE TABLE activities (
 
 #### Directory Structure
 
-```
+```plaintext
 app/
 ├── Console/
 ├── Events/
