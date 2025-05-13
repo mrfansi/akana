@@ -93,7 +93,7 @@ export default function CreateTaskForm({ projects, users, onSuccess }: CreateTas
                     <SelectItem key={project.id} value={project.id.toString()}>
                       {project.name}
                     </SelectItem>
-                  )) || <SelectItem value="">No projects available</SelectItem>}
+                  )) || <SelectItem value="no-project">No projects available</SelectItem>}
                 </SelectContent>
               </Select>
               {errors.project_id && <p className="text-red-500 text-sm mt-1">{errors.project_id}</p>}
@@ -113,7 +113,7 @@ export default function CreateTaskForm({ projects, users, onSuccess }: CreateTas
                     <SelectItem key={user.id} value={user.id.toString()}>
                       {user.name}
                     </SelectItem>
-                  )) || <SelectItem value="">No users available</SelectItem>}
+                  )) || <SelectItem value="no-user">No users available</SelectItem>}
                 </SelectContent>
               </Select>
               {errors.assignee_id && <p className="text-red-500 text-sm mt-1">{errors.assignee_id}</p>}
