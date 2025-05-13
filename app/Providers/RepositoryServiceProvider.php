@@ -2,12 +2,18 @@
 
 namespace App\Providers;
 
-use App\Models\Role;
-use App\Models\User;
-use App\Repositories\Contracts\RoleRepositoryInterface;
-use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Repositories\Eloquent\RoleRepository;
-use App\Repositories\Eloquent\UserRepository;
+use App\Interfaces\Repositories\BoardRepositoryInterface;
+use App\Interfaces\Repositories\ProjectRepositoryInterface;
+use App\Interfaces\Repositories\TaskRepositoryInterface;
+use App\Interfaces\Services\BoardServiceInterface;
+use App\Interfaces\Services\ProjectServiceInterface;
+use App\Interfaces\Services\TaskServiceInterface;
+use App\Repositories\BoardRepository;
+use App\Repositories\ProjectRepository;
+use App\Repositories\TaskRepository;
+use App\Services\BoardService;
+use App\Services\ProjectService;
+use App\Services\TaskService;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -17,17 +23,15 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Bind UserRepository
-        $this->app->bind(UserRepositoryInterface::class, function ($app) {
-            return new UserRepository(new User);
-        });
+        // Register repositories
+        $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
+        $this->app->bind(ProjectRepositoryInterface::class, ProjectRepository::class);
+        $this->app->bind(BoardRepositoryInterface::class, BoardRepository::class);
 
-        // Bind RoleRepository
-        $this->app->bind(RoleRepositoryInterface::class, function ($app) {
-            return new RoleRepository(new Role);
-        });
-
-        // Additional repositories can be bound here as the application grows
+        // Register services
+        $this->app->bind(TaskServiceInterface::class, TaskService::class);
+        $this->app->bind(ProjectServiceInterface::class, ProjectService::class);
+        $this->app->bind(BoardServiceInterface::class, BoardService::class);
     }
 
     /**

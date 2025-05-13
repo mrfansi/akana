@@ -2,15 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Team extends Model
 {
-    use HasFactory;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -19,30 +14,21 @@ class Team extends Model
     protected $fillable = [
         'name',
         'description',
-        'owner_id',
     ];
 
     /**
-     * Get the owner of the team.
+     * Get the users that belong to the team.
      */
-    public function owner(): BelongsTo
+    public function users()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsToMany(User::class);
     }
 
     /**
-     * The members that belong to the team.
+     * Get the projects for the team.
      */
-    public function members(): BelongsToMany
+    public function projects()
     {
-        return $this->belongsToMany(User::class, 'team_members')
-            ->withPivot('role_in_team') // As per ERD: TEAMS_MEMBERS has role_in_team
-            ->withTimestamps(); // As per ERD: TEAMS_MEMBERS has joined_at (covered by timestamps)
+        return $this->hasMany(Project::class);
     }
-
-    // Relationship for projects owned by the team can be added later
-    // public function projects(): HasMany
-    // {
-    //     return $this->hasMany(Project::class);
-    // }
 }

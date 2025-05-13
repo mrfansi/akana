@@ -1,91 +1,196 @@
-# Product Requirement Document: Akana Task Management App
+# Akana - Task Management Application Requirements
 
-## 1. Project Vision & Goals
+## Product Overview
 
-**Vision:** To create a collaborative task management application, "Akana" (inspired by Asana), that empowers teams with diverse roles to manage projects efficiently, track progress seamlessly, and foster effective communication.
+Akana is a comprehensive task management application designed to facilitate structured collaboration for teams with diverse roles. Inspired by Asana, it provides a robust platform for task assignment, tracking, and visualization with a focus on role-based workflows and real-time collaboration.
 
-**Goals:**
+## User Roles
 
-* Develop a robust, scalable, and maintainable platform using Laravel, React (with Inertia.js), and ShadCN UI.
-* Implement core task management features including task assignment, Kanban boards, role-based dashboards, and timeline views.
-* Enable real-time collaboration and updates using Laravel Reverb.
-* Provide a clean, professional, and interactive user interface that is responsive across devices.
-* Support structured collaboration for teams with specific roles: UI/UX Designers, UX Researchers, Front-End Developers, Back-End Developers, DevOps, and Database Administrators.
+The application supports the following user roles, each with specific permissions and dashboards:
 
-## 2. Target Audience & User Roles
+1. **UI/UX Designers**
+   - Focus on design tasks and visual components
+   - Access to design-specific dashboards and metrics
+   - Ability to attach design files and mockups to tasks
 
-The application is designed for project teams requiring structured collaboration. Key user roles include:
+2. **UX Researchers**
+   - Focus on research tasks and user feedback
+   - Access to research-specific dashboards and metrics
+   - Ability to attach research findings and user studies to tasks
 
-* **Project Manager (Implicit Role/Admin):** Oversees projects, manages team members, assigns tasks, and tracks overall progress.
-* **UI/UX Designer:** Responsible for designing user interfaces and experiences. Tasks may include wireframing, prototyping, creating mockups, and UI asset creation.
-* **UX Researcher:** Focuses on understanding user needs and behaviors. Tasks may involve user interviews, usability testing, survey creation, and persona development.
-* **Front-End Developer:** Implements the user interface and client-side logic. Tasks include translating designs into code, building interactive components, and ensuring responsiveness.
-* **Back-End Developer:** Develops server-side logic, APIs, and database interactions. Tasks involve building application features, ensuring data integrity, and managing server performance.
-* **DevOps Engineer:** Manages infrastructure, deployment pipelines, and application monitoring. Tasks include CI/CD setup, server configuration, and ensuring application uptime.
-* **Database Administrator (DBA):** Designs, implements, and maintains the database. Tasks include schema design, query optimization, backups, and security.
-* **Team Member (General):** A generic role for users who participate in projects without a specialized technical role, contributing to tasks and discussions.
+3. **Front-End Developers**
+   - Focus on front-end implementation tasks
+   - Access to front-end development dashboards and metrics
+   - Ability to link tasks to code repositories
 
-## 3. User Stories
+4. **Back-End Developers**
+   - Focus on back-end implementation tasks
+   - Access to back-end development dashboards and metrics
+   - Ability to link tasks to code repositories and API documentation
 
-*(This section will be expanded with detailed user stories for each role and feature.)*
+5. **DevOps**
+   - Focus on deployment and infrastructure tasks
+   - Access to deployment dashboards and metrics
+   - Ability to link tasks to deployment pipelines and infrastructure resources
 
-**Example User Stories:**
+6. **Database Administrators**
+   - Focus on database management tasks
+   - Access to database dashboards and metrics
+   - Ability to link tasks to database schemas and migration scripts
 
-* **As a Project Manager, I want to create a new project and invite team members so that we can start collaborating.**
-* **As a UI/UX Designer, I want to upload design mockups to a task so that developers can access them easily.**
-* **As a Front-End Developer, I want to see tasks assigned to me on my dashboard so that I know what to work on.**
-* **As a Back-End Developer, I want to be notified in real-time when a task status changes so that I am aware of project progress.**
-* **As a Team Member, I want to view tasks on a Kanban board so that I can visualize workflow and progress.**
-* **As a DevOps Engineer, I want a dashboard view of system health and deployment status.**
-* **As a UX Researcher, I want to create tasks for usability testing sessions and link reports.**
+7. **Project Managers**
+   - Overall project oversight
+   - Access to all dashboards and metrics
+   - Ability to create and assign tasks to all roles
+   - Access to reporting and analytics features
 
-## 4. Core Features List
+## Core Features
 
-* **User Management & Authentication:**
-  * User registration and login
-  * Password reset
-  * Profile management
-  * Role-Based Access Control (RBAC)
-* **Team & Project Management:**
-  * Team creation and member management
-  * Project creation, configuration, and archiving
-  * Project dashboards
-* **Task Management:**
-  * Task creation with details (title, description, assignee, due date, priority, status, attachments)
-  * Task assignment to one or more users
-  * Sub-tasks
-  * Task comments and discussions
-  * Task dependencies (optional, future enhancement)
-* **Views & Visualizations:**
-  * **Kanban Boards:** Customizable columns, drag-and-drop tasks.
-  * **List View:** Simple list of tasks with sorting and filtering.
-  * **Timeline View (Gantt-like):** Visualize task durations and dependencies over time.
-  * **Calendar View:** Tasks plotted on a calendar.
-* **Role-Based Dashboards:**
-  * Customized views and information relevant to each user role (e.g., a designer sees design tasks, a developer sees coding tasks).
-* **Real-time Collaboration:**
-  * Real-time updates for task changes (status, assignment, comments) via Laravel Reverb.
-  * Notifications (in-app and potentially email) for important events.
-* **Search & Filtering:**
-  * Global search for tasks, projects, users.
-  * Advanced filtering options within views.
-* **File Attachments:**
-  * Ability to attach files to tasks and comments.
+### 1. Task Management
 
-## 5. Non-functional Requirements
+- **Task Creation and Assignment**
+  - Create tasks with title, description, due date, priority, and assignee
+  - Assign tasks to specific users or teams
+  - Set task dependencies and relationships
+  - Add attachments, comments, and tags to tasks
 
-* **Scalability:** The application should be able to handle a growing number of users, projects, and tasks.
-* **Maintainability:** Codebase should be well-structured, documented, and follow SOLID principles and design patterns for ease of maintenance and future development.
-* **Security:**
-  * Protection against common web vulnerabilities (XSS, CSRF, SQL Injection).
-  * Secure handling of user data and authentication.
-  * Proper authorization checks for all actions.
-* **Performance:**
-  * Fast page load times.
-  * Efficient database queries.
-  * Responsive UI interactions.
-* **Usability:**
-  * Intuitive and user-friendly interface.
-  * Clear navigation and information architecture.
-  * Responsive design for various screen sizes (desktop, tablet, mobile).
-* **Reliability:** The application should be stable and available with minimal downtime.
+- **Task Tracking**
+  - Track task status (To Do, In Progress, In Review, Done)
+  - Track time spent on tasks
+  - Track task history and changes
+  - Set up notifications and reminders for tasks
+
+### 2. Kanban Boards
+
+- **Board Creation and Customization**
+  - Create boards for different projects or teams
+  - Customize board columns and swimlanes
+  - Set up WIP limits and board policies
+
+- **Card Management**
+  - Drag and drop cards between columns
+  - View card details and history
+  - Filter and sort cards based on various criteria
+  - Collapse and expand card details
+
+### 3. Role-Based Dashboards
+
+- **Personalized Dashboards**
+  - Role-specific dashboard layouts and widgets
+  - Customizable widgets and metrics
+  - Quick access to relevant tasks and projects
+
+- **Team Dashboards**
+  - Overview of team performance and workload
+  - Team-specific metrics and KPIs
+  - Resource allocation and capacity planning
+
+### 4. Timeline Views
+
+- **Gantt Charts**
+  - Visualize task dependencies and timelines
+  - Drag and drop to adjust task durations and dependencies
+  - Highlight critical path and milestones
+
+- **Calendar Views**
+  - View tasks in a calendar format
+  - Filter and sort calendar events
+  - Set up recurring tasks and events
+
+### 5. Real-Time Updates
+
+- **WebSocket Integration**
+  - Real-time updates for task changes
+  - Live notifications for mentions and assignments
+  - Collaborative editing of task details
+
+- **Activity Feeds**
+  - Track user activity and changes
+  - Filter and sort activity feeds
+  - Receive notifications for relevant activities
+
+### 6. Reporting and Analytics
+
+- **Performance Metrics**
+  - Track team and individual performance
+  - Analyze task completion rates and times
+  - Identify bottlenecks and improvement areas
+
+- **Custom Reports**
+  - Generate custom reports based on various criteria
+  - Export reports in different formats (PDF, CSV, Excel)
+  - Schedule regular report generation and distribution
+
+## Technical Requirements
+
+### 1. Backend
+
+- **Laravel 12 Framework**
+  - Implement RESTful API endpoints
+  - Follow SOLID principles and design patterns
+  - Implement robust error handling and logging
+
+- **Database**
+  - Use MySQL for data storage
+  - Implement efficient database schema and indexes
+  - Use migrations for database versioning
+
+- **Authentication and Authorization**
+  - Implement role-based access control
+  - Secure API endpoints with proper authentication
+  - Implement JWT for API authentication
+
+### 2. Frontend
+
+- **Inertia.js with React**
+  - Implement SPA-like experience
+  - Use React hooks and context for state management
+  - Implement efficient component structure
+
+- **ShadCN UI Components**
+  - Use ShadCN components for consistent UI
+  - Implement responsive layouts for all screen sizes
+  - Ensure accessibility compliance
+
+### 3. Real-Time Features
+
+- **Laravel Reverb**
+  - Implement WebSocket connections for real-time updates
+  - Broadcast events for task changes and notifications
+  - Ensure efficient WebSocket connection management
+
+## Non-Functional Requirements
+
+### 1. Performance
+
+- Page load time under 2 seconds
+- API response time under 500ms
+- Support for concurrent users (up to 100 simultaneous users)
+
+### 2. Security
+
+- HTTPS for all communications
+- Input validation and sanitization
+- Protection against common web vulnerabilities (XSS, CSRF, SQL Injection)
+- Regular security audits and updates
+
+### 3. Scalability
+
+- Horizontal scaling capability
+- Efficient caching mechanisms
+- Database optimization for large datasets
+
+### 4. Maintainability
+
+- Comprehensive documentation
+- Clean and consistent code style
+- Automated testing (unit, integration, and end-to-end)
+- CI/CD pipeline integration
+
+## Future Enhancements
+
+- Mobile application (iOS and Android)
+- Integration with third-party tools (GitHub, Slack, etc.)
+- Advanced analytics and reporting
+- AI-powered task recommendations and insights
+- Time tracking and invoicing features
