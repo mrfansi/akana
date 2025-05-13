@@ -1,14 +1,60 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Badge } from '@/Components/ui/badge';
-import { Separator } from '@/Components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/Components/ui/tabs';
-import { CalendarIcon, UsersIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
-import AppLayout from '@/Layouts/AppLayout';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AppLayout from '@/layouts/app-layout';
+import { CalendarIcon, Users as UsersIcon, ClipboardList as ClipboardDocumentListIcon } from 'lucide-react';
 
-export default function Show({ project }) {
+// Define types
+interface Team {
+  id: number;
+  name: string;
+}
+
+interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  status?: string;
+  priority?: string;
+  due_date?: string;
+}
+
+interface Column {
+  id: number;
+  name: string;
+}
+
+interface Board {
+  id: number;
+  name: string;
+  description?: string;
+  columns?: Column[];
+}
+
+interface Project {
+  id: number;
+  name: string;
+  description?: string;
+  status?: string;
+  team?: Team;
+  tasks?: Task[];
+  boards?: Board[];
+  start_date?: string;
+  end_date?: string;
+}
+
+interface ShowProps {
+  project: Project;
+}
+
+// Define allowed badge variants based on the ShadCN UI implementation
+type BadgeVariant = 'destructive' | 'secondary' | 'outline' | 'default';
+
+export default function Show({ project }: ShowProps) {
   const { delete: destroy } = useForm();
 
   const handleDelete = () => {
@@ -18,7 +64,7 @@ export default function Show({ project }) {
   };
 
   return (
-    <AppLayout title={project.name}>
+    <AppLayout>
       <Head title={project.name} />
       
       <div className="py-12">
@@ -28,7 +74,7 @@ export default function Show({ project }) {
               <Link href={route('projects.index')}>
                 <Button variant="outline" size="sm">Back to Projects</Button>
               </Link>
-              <h1 className="text-2xl font-semibold text-gray-900">{project.name}</h1>
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{project.name}</h1>
               <Badge variant={getStatusBadgeVariant(project.status)}>
                 {project.status || 'No Status'}
               </Badge>
@@ -41,11 +87,11 @@ export default function Show({ project }) {
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6">
+          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-2">
                 <h2 className="text-lg font-medium mb-2">Description</h2>
-                <p className="text-gray-700 whitespace-pre-wrap">
+                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                   {project.description || 'No description provided.'}
                 </p>
               </div>
@@ -58,7 +104,7 @@ export default function Show({ project }) {
                   <CardContent>
                     <div className="space-y-4">
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">Team</h3>
+                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Team</h3>
                         <div className="flex items-center">
                           <UsersIcon className="h-4 w-4 mr-2" />
                           <p>{project.team?.name || 'Not assigned'}</p>
@@ -68,7 +114,7 @@ export default function Show({ project }) {
                       <Separator />
 
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">Timeline</h3>
+                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Timeline</h3>
                         <div className="flex items-center">
                           <CalendarIcon className="h-4 w-4 mr-2" />
                           <p>
@@ -82,14 +128,14 @@ export default function Show({ project }) {
                       <Separator />
 
                       <div>
-                        <h3 className="text-sm font-medium text-gray-500">Stats</h3>
+                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Stats</h3>
                         <div className="grid grid-cols-2 gap-2 mt-2">
-                          <div className="bg-gray-50 p-2 rounded">
-                            <p className="text-xs text-gray-500">Tasks</p>
+                          <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Tasks</p>
                             <p className="text-lg font-semibold">{project.tasks?.length || 0}</p>
                           </div>
-                          <div className="bg-gray-50 p-2 rounded">
-                            <p className="text-xs text-gray-500">Boards</p>
+                          <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">Boards</p>
                             <p className="text-lg font-semibold">{project.boards?.length || 0}</p>
                           </div>
                         </div>
@@ -115,9 +161,9 @@ export default function Show({ project }) {
               </div>
               
               {(!project.tasks || project.tasks.length === 0) ? (
-                <div className="bg-gray-50 p-6 rounded-lg text-center">
-                  <ClipboardDocumentListIcon className="h-12 w-12 mx-auto text-gray-400 mb-2" />
-                  <p className="text-gray-500">No tasks found for this project.</p>
+                <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg text-center">
+                  <ClipboardDocumentListIcon className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-2" />
+                  <p className="text-gray-500 dark:text-gray-400">No tasks found for this project.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -133,11 +179,11 @@ export default function Show({ project }) {
                           </div>
                         </CardHeader>
                         <CardContent className="pb-2">
-                          <p className="text-sm text-gray-500 line-clamp-2">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
                             {task.description || 'No description provided.'}
                           </p>
                         </CardContent>
-                        <CardFooter className="flex justify-between text-xs text-gray-500 pt-0">
+                        <CardFooter className="flex justify-between text-xs text-gray-500 dark:text-gray-400 pt-0">
                           <Badge variant={getStatusBadgeVariant(task.status)}>
                             {task.status || 'No Status'}
                           </Badge>
@@ -162,9 +208,9 @@ export default function Show({ project }) {
               </div>
               
               {(!project.boards || project.boards.length === 0) ? (
-                <div className="bg-gray-50 p-6 rounded-lg text-center">
-                  <ClipboardDocumentListIcon className="h-12 w-12 mx-auto text-gray-400 mb-2" />
-                  <p className="text-gray-500">No boards found for this project.</p>
+                <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg text-center">
+                  <ClipboardDocumentListIcon className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-2" />
+                  <p className="text-gray-500 dark:text-gray-400">No boards found for this project.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -178,7 +224,7 @@ export default function Show({ project }) {
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
-                          <p className="text-sm text-gray-500 line-clamp-2">
+                          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
                             {board.description || 'No description provided.'}
                           </p>
                         </CardContent>
@@ -195,16 +241,16 @@ export default function Show({ project }) {
   );
 }
 
-function getStatusBadgeVariant(status) {
+function getStatusBadgeVariant(status?: string): BadgeVariant {
   switch (status?.toLowerCase()) {
     case 'completed':
     case 'done':
-      return 'success';
+      return 'default'; // Changed from 'success' to match available variants
     case 'in progress':
-      return 'primary';
+      return 'default'; // Changed from 'primary' to match available variants
     case 'on hold':
     case 'blocked':
-      return 'warning';
+      return 'secondary'; // Changed from 'warning' to match available variants
     case 'cancelled':
       return 'destructive';
     case 'planning':
@@ -216,12 +262,12 @@ function getStatusBadgeVariant(status) {
   }
 }
 
-function getPriorityBadgeVariant(priority) {
+function getPriorityBadgeVariant(priority?: string): BadgeVariant {
   switch (priority?.toLowerCase()) {
     case 'high':
       return 'destructive';
     case 'medium':
-      return 'warning';
+      return 'secondary'; // Changed from 'warning' to match available variants
     case 'low':
       return 'secondary';
     default:

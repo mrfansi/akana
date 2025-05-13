@@ -1,28 +1,51 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Badge } from '@/Components/ui/badge';
-import { CalendarIcon, ClockIcon } from '@heroicons/react/24/outline';
-import AppLayout from '@/Layouts/AppLayout';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import AppLayout from '@/layouts/app-layout';
+import { CalendarIcon, Clock as ClockIcon } from 'lucide-react';
 
-export default function Index({ tasks }) {
+// Define types for the task data
+interface Project {
+  id: number;
+  name: string;
+}
+
+interface Task {
+  id: number;
+  title: string;
+  description?: string;
+  priority?: string;
+  estimated_hours?: number;
+  due_date?: string;
+  project?: Project;
+}
+
+interface IndexProps {
+  tasks: Task[];
+}
+
+// Define allowed badge variants based on the ShadCN UI implementation
+type BadgeVariant = 'destructive' | 'secondary' | 'outline' | 'default';
+
+export default function Index({ tasks }: IndexProps) {
   return (
-    <AppLayout title="Tasks">
+    <AppLayout>
       <Head title="Tasks" />
       
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-semibold text-gray-900">Tasks</h1>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Tasks</h1>
             <Link href={route('tasks.create')}>
               <Button>Create Task</Button>
             </Link>
           </div>
 
           {tasks.length === 0 ? (
-            <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-              <p className="text-gray-500">No tasks found. Create your first task to get started.</p>
+            <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+              <p className="text-gray-500 dark:text-gray-400">No tasks found. Create your first task to get started.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -41,11 +64,11 @@ export default function Index({ tasks }) {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-gray-500 line-clamp-2">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
                         {task.description || 'No description provided.'}
                       </p>
                     </CardContent>
-                    <CardFooter className="flex justify-between text-xs text-gray-500">
+                    <CardFooter className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                       <div className="flex items-center">
                         <ClockIcon className="h-4 w-4 mr-1" />
                         {task.estimated_hours ? `${task.estimated_hours}h` : 'No estimate'}
@@ -66,12 +89,12 @@ export default function Index({ tasks }) {
   );
 }
 
-function getBadgeVariant(priority) {
+function getBadgeVariant(priority?: string): BadgeVariant {
   switch (priority?.toLowerCase()) {
     case 'high':
       return 'destructive';
     case 'medium':
-      return 'warning';
+      return 'secondary'; // Changed from 'warning' to match available variants
     case 'low':
       return 'secondary';
     default:

@@ -1,28 +1,63 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Badge } from '@/Components/ui/badge';
-import { ViewColumnsIcon } from '@heroicons/react/24/outline';
-import AppLayout from '@/Layouts/AppLayout';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import AppLayout from '@/layouts/app-layout';
 
-export default function Index({ boards }) {
+// Create custom icon component
+const ViewColumnsIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125C3.504 4.5 3 5.004 3 5.625v12.75c0 .621.504 1.125 1.125 1.125Z" />
+  </svg>
+);
+
+// Define types
+interface Task {
+  id: number;
+  title: string;
+}
+
+interface Column {
+  id: number;
+  name: string;
+  tasks?: Task[];
+}
+
+interface Project {
+  id: number;
+  name: string;
+}
+
+interface Board {
+  id: number;
+  name: string;
+  description?: string;
+  project?: Project;
+  columns?: Column[];
+}
+
+interface IndexProps {
+  boards: Board[];
+}
+
+export default function Index({ boards }: IndexProps) {
   return (
-    <AppLayout title="Boards">
+    <AppLayout>
       <Head title="Boards" />
       
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-semibold text-gray-900">Kanban Boards</h1>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Kanban Boards</h1>
             <Link href={route('boards.create')}>
               <Button>Create Board</Button>
             </Link>
           </div>
 
           {boards.length === 0 ? (
-            <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-              <p className="text-gray-500">No boards found. Create your first board to get started.</p>
+            <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+              <p className="text-gray-500 dark:text-gray-400">No boards found. Create your first board to get started.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -36,11 +71,11 @@ export default function Index({ boards }) {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-gray-500 line-clamp-2">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
                         {board.description || 'No description provided.'}
                       </p>
                     </CardContent>
-                    <CardFooter className="flex justify-between text-xs text-gray-500">
+                    <CardFooter className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                       <div className="flex items-center">
                         <ViewColumnsIcon className="h-4 w-4 mr-1" />
                         {board.columns?.length || 0} columns

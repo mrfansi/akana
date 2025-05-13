@@ -1,51 +1,78 @@
 import React from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/Components/ui/card';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
-import { Textarea } from '@/Components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
-import { CalendarIcon } from '@heroicons/react/24/outline';
-import { Calendar } from '@/Components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/Components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
-import AppLayout from '@/Layouts/AppLayout';
+import AppLayout from '@/layouts/app-layout';
+import { CalendarIcon } from 'lucide-react';
 
-export default function Edit({ task, projects, users }) {
-  const { data, setData, put, processing, errors } = useForm({
-    title: task.title || '',
-    description: task.description || '',
-    project_id: task.project_id?.toString() || '',
-    assignee_id: task.assignee_id?.toString() || '',
-    status: task.status || 'To Do',
-    priority: task.priority || 'Medium',
-    due_date: task.due_date ? new Date(task.due_date) : null,
-    estimated_hours: task.estimated_hours?.toString() || '',
-    actual_hours: task.actual_hours?.toString() || '',
+// Define types
+interface User {
+  id: number;
+  name: string;
+}
+
+interface Project {
+  id: number;
+  name: string;
+}
+
+interface CreateProps {
+  projects: Project[];
+  users: User[];
+}
+
+interface TaskFormData {
+  title: string;
+  description: string;
+  project_id: string;
+  assignee_id: string;
+  status: string;
+  priority: string;
+  due_date: Date | null;
+  estimated_hours: string;
+  [key: string]: any; // Add index signature to satisfy FormDataType constraint
+}
+
+export default function Create({ projects, users }: CreateProps) {
+  const { data, setData, post, processing, errors } = useForm<TaskFormData>({
+    title: '',
+    description: '',
+    project_id: '',
+    assignee_id: '',
+    status: 'To Do',
+    priority: 'Medium',
+    due_date: null,
+    estimated_hours: '',
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    put(route('tasks.update', task.id));
+    post(route('tasks.store'));
   };
 
   return (
-    <AppLayout title={`Edit Task: ${task.title}`}>
-      <Head title={`Edit Task: ${task.title}`} />
+    <AppLayout>
+      <Head title="Create Task" />
       
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center space-x-4">
-              <Link href={route('tasks.show', task.id)}>
-                <Button variant="outline" size="sm">Back to Task</Button>
+              <Link href={route('tasks.index')}>
+                <Button variant="outline" size="sm">Back to Tasks</Button>
               </Link>
-              <h1 className="text-2xl font-semibold text-gray-900">Edit Task</h1>
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Create New Task</h1>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
             <form onSubmit={handleSubmit}>
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -66,7 +93,6 @@ export default function Edit({ task, projects, users }) {
                       <Select
                         value={data.project_id}
                         onValueChange={(value) => setData('project_id', value)}
-                        required
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select a project" />
@@ -92,7 +118,7 @@ export default function Edit({ task, projects, users }) {
                           <SelectValue placeholder="Select an assignee" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">Unassigned</SelectItem>
+                          <SelectItem value="0">Unassigned</SelectItem>
                           {users?.map((user) => (
                             <SelectItem key={user.id} value={user.id.toString()}>
                               {user.name}
@@ -159,7 +185,7 @@ export default function Edit({ task, projects, users }) {
                             <Calendar
                               mode="single"
                               selected={data.due_date ? new Date(data.due_date) : undefined}
-                              onSelect={(date) => setData('due_date', date)}
+                              onSelect={(date) => setData('due_date', date || null)}
                               initialFocus
                             />
                           </PopoverContent>
@@ -167,32 +193,17 @@ export default function Edit({ task, projects, users }) {
                         {errors.due_date && <p className="text-red-500 text-sm mt-1">{errors.due_date}</p>}
                       </div>
 
-                      <div className="space-y-4">
-                        <div>
-                          <Label htmlFor="estimated_hours">Estimated Hours</Label>
-                          <Input
-                            id="estimated_hours"
-                            type="number"
-                            min="0"
-                            step="0.5"
-                            value={data.estimated_hours}
-                            onChange={(e) => setData('estimated_hours', e.target.value)}
-                          />
-                          {errors.estimated_hours && <p className="text-red-500 text-sm mt-1">{errors.estimated_hours}</p>}
-                        </div>
-                        
-                        <div>
-                          <Label htmlFor="actual_hours">Actual Hours</Label>
-                          <Input
-                            id="actual_hours"
-                            type="number"
-                            min="0"
-                            step="0.5"
-                            value={data.actual_hours}
-                            onChange={(e) => setData('actual_hours', e.target.value)}
-                          />
-                          {errors.actual_hours && <p className="text-red-500 text-sm mt-1">{errors.actual_hours}</p>}
-                        </div>
+                      <div>
+                        <Label htmlFor="estimated_hours">Estimated Hours</Label>
+                        <Input
+                          id="estimated_hours"
+                          type="number"
+                          min="0"
+                          step="0.5"
+                          value={data.estimated_hours}
+                          onChange={(e) => setData('estimated_hours', e.target.value)}
+                        />
+                        {errors.estimated_hours && <p className="text-red-500 text-sm mt-1">{errors.estimated_hours}</p>}
                       </div>
                     </div>
                   </div>
@@ -210,10 +221,10 @@ export default function Edit({ task, projects, users }) {
                 </div>
 
                 <div className="flex justify-end space-x-2">
-                  <Link href={route('tasks.show', task.id)}>
+                  <Link href={route('tasks.index')}>
                     <Button variant="outline" type="button">Cancel</Button>
                   </Link>
-                  <Button type="submit" disabled={processing}>Update Task</Button>
+                  <Button type="submit" disabled={processing}>Create Task</Button>
                 </div>
               </div>
             </form>
