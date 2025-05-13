@@ -26,7 +26,8 @@ class ProjectRepository implements ProjectRepositoryInterface
      */
     public function findById(int $id): ?Project
     {
-        return Project::query()->find($id);
+        $result = Project::find($id);
+        return $result instanceof Project ? $result : null;
     }
 
     /**

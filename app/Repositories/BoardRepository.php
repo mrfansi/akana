@@ -27,7 +27,8 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function findById(int $id): ?Board
     {
-        return Board::query()->find($id);
+        $result = Board::find($id);
+        return $result instanceof Board ? $result : null;
     }
 
     /**
@@ -137,8 +138,8 @@ class BoardRepository implements BoardRepositoryInterface
      */
     public function updateColumn(int $columnId, array $data): ?Column
     {
-        $column = Column::query()->find($columnId);
-        if (!$column) {
+        $column = Column::find($columnId);
+        if (!($column instanceof Column)) {
             return null;
         }
         

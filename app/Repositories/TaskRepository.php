@@ -26,8 +26,8 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function findById(int $id): ?Task
     {
-        $task = Task::query()->find($id);
-        return $task;
+        $result = Task::find($id);
+        return $result instanceof Task ? $result : null;
     }
 
     /**
