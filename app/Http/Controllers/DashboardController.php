@@ -54,7 +54,7 @@ class DashboardController extends Controller
                 ->count(),
         ];
         
-        return inertia('Dashboard', [
+        return inertia('dashboard', [
             'recentTasks' => $recentTasks,
             'upcomingTasks' => $upcomingTasks,
             'recentProjects' => $recentProjects,

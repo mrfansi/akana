@@ -33,7 +33,7 @@ class ProjectController extends Controller
     {
         $projects = $this->projectService->getAllProjects();
         
-        return inertia('Projects/Index', [
+        return inertia('projects/index', [
             'projects' => $projects
         ]);
     }
@@ -45,7 +45,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return inertia('Projects/Create');
+        return inertia('projects/create');
     }
 
     /**
@@ -88,7 +88,7 @@ class ProjectController extends Controller
         // Load relationships
         $project->load(['team', 'tasks', 'boards.columns.tasks']);
 
-        return inertia('Projects/Show', [
+        return inertia('projects/show', [
             'project' => $project
         ]);
     }
@@ -110,7 +110,7 @@ class ProjectController extends Controller
         // Load relationships
         $project->load(['team']);
 
-        return inertia('Projects/Edit', [
+        return inertia('projects/edit', [
             'project' => $project
         ]);
     }

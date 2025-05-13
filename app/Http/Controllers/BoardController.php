@@ -33,7 +33,7 @@ class BoardController extends Controller
     {
         $boards = $this->boardService->getAllBoards();
         
-        return inertia('Boards/Index', [
+        return inertia('boards/index', [
             'boards' => $boards
         ]);
     }
@@ -45,7 +45,7 @@ class BoardController extends Controller
      */
     public function create()
     {
-        return inertia('Boards/Create');
+        return inertia('boards/create');
     }
 
     /**
@@ -88,7 +88,7 @@ class BoardController extends Controller
         // Load relationships
         $board->load(['project', 'columns.tasks.assignee']);
 
-        return inertia('Boards/Show', [
+        return inertia('boards/show', [
             'board' => $board
         ]);
     }
@@ -110,7 +110,7 @@ class BoardController extends Controller
         // Load relationships
         $board->load(['project']);
 
-        return inertia('Boards/Edit', [
+        return inertia('boards/edit', [
             'board' => $board
         ]);
     }

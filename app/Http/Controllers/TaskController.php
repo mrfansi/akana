@@ -33,7 +33,7 @@ class TaskController extends Controller
     {
         $tasks = $this->taskService->getAllTasks();
         
-        return inertia('Tasks/Index', [
+        return inertia('tasks/index', [
             'tasks' => $tasks
         ]);
     }
@@ -45,7 +45,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return inertia('Tasks/Create');
+        return inertia('tasks/create');
     }
 
     /**
@@ -90,7 +90,7 @@ class TaskController extends Controller
         // Load relationships
         $task->load(['assignee', 'reporter', 'project', 'comments.user', 'attachments']);
 
-        return inertia('Tasks/Show', [
+        return inertia('tasks/show', [
             'task' => $task
         ]);
     }
@@ -112,7 +112,7 @@ class TaskController extends Controller
         // Load relationships
         $task->load(['assignee', 'reporter', 'project']);
 
-        return inertia('Tasks/Edit', [
+        return inertia('tasks/edit', [
             'task' => $task
         ]);
     }
