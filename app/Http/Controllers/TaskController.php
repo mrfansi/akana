@@ -45,7 +45,14 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return inertia('tasks/create');
+        // Get projects and users for the create form
+        $projects = \App\Models\Project::all();
+        $users = \App\Models\User::all();
+
+        return inertia('tasks/create', [
+            'projects' => $projects,
+            'users' => $users
+        ]);
     }
 
     /**
@@ -90,8 +97,14 @@ class TaskController extends Controller
         // Load relationships
         $task->load(['assignee', 'reporter', 'project', 'comments.user', 'attachments']);
 
+        // Get projects and users for the edit form
+        $projects = \App\Models\Project::all();
+        $users = \App\Models\User::all();
+
         return inertia('tasks/show', [
-            'task' => $task
+            'task' => $task,
+            'projects' => $projects,
+            'users' => $users
         ]);
     }
 

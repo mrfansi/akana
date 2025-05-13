@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
 import { CalendarIcon, Users as UsersIcon, PlusIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import CreateProjectForm from './components/create-project-form';
 
 // Define types
 interface Team {
@@ -31,12 +32,13 @@ interface Project {
 
 interface IndexProps {
   projects: Project[];
+  teams: Team[];
 }
 
 // Define allowed badge variants based on the ShadCN UI implementation
 type BadgeVariant = 'destructive' | 'secondary' | 'outline' | 'default';
 
-export default function Index({ projects }: IndexProps) {
+export default function Index({ projects, teams }: IndexProps) {
   const [open, setOpen] = useState(false);
   
   return (
@@ -54,23 +56,15 @@ export default function Index({ projects }: IndexProps) {
                   Create Project
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto p-0">
-                <DialogHeader className="px-6 pt-6 pb-2">
+              <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
+                <DialogHeader>
                   <DialogTitle>Create New Project</DialogTitle>
                   <DialogDescription>Fill out the form below to create a new project.</DialogDescription>
                 </DialogHeader>
-                <div className="p-0 h-full">
-                  <iframe src={route('projects.create')} className="w-full h-[70vh] border-none" onLoad={(e) => {
-                    // Attempt to communicate with the iframe content
-                    const iframe = e.currentTarget;
-                    try {
-                      // Send a message to the iframe to indicate it's embedded
-                      iframe.contentWindow?.postMessage('embedded-in-dialog', '*');
-                    } catch (err) {
-                      console.error('Error communicating with iframe:', err);
-                    }
-                  }} />
-                </div>
+                <CreateProjectForm
+                  teams={teams}
+                  onSuccess={() => setOpen(false)}
+                />
               </DialogContent>
             </Dialog>
           </div>

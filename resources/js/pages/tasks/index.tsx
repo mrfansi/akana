@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
-import { CalendarIcon, Clock as ClockIcon } from 'lucide-react';
+import { CalendarIcon, Clock as ClockIcon, PlusIcon } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import CreateTaskForm from './components/create-task-form';
 
 // Define types for the task data
 interface Project {
@@ -22,14 +24,23 @@ interface Task {
   project?: Project;
 }
 
+interface User {
+  id: number;
+  name: string;
+}
+
 interface IndexProps {
   tasks: Task[];
+  projects: Project[];
+  users: User[];
 }
 
 // Define allowed badge variants based on the ShadCN UI implementation
 type BadgeVariant = 'destructive' | 'secondary' | 'outline' | 'default';
 
-export default function Index({ tasks }: IndexProps) {
+export default function Index({ tasks, projects, users }: IndexProps) {
+  const [open, setOpen] = useState(false);
+
   return (
     <AppLayout>
       <Head title="Tasks" />
@@ -38,9 +49,25 @@ export default function Index({ tasks }: IndexProps) {
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Tasks</h1>
-            <Link href={route('tasks.create')}>
-              <Button>Create Task</Button>
-            </Link>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <PlusIcon className="mr-2 h-4 w-4" />
+                  Create Task
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
+                <DialogHeader>
+                  <DialogTitle>Create New Task</DialogTitle>
+                  <DialogDescription>Fill in the details to create a new task.</DialogDescription>
+                </DialogHeader>
+                <CreateTaskForm
+                  projects={projects}
+                  users={users}
+                  onSuccess={() => setOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
 
           {tasks.length === 0 ? (

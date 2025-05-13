@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
-import { CalendarIcon, Clock as ClockIcon, User as UserIcon, MessageSquare as ChatBubbleLeftIcon, Paperclip as PaperClipIcon } from 'lucide-react';
+import { CalendarIcon, Clock as ClockIcon, User as UserIcon, MessageSquare as ChatBubbleLeftIcon, Paperclip as PaperClipIcon, PencilIcon } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import EditTaskForm from './components/edit-task-form';
 
 // Define types
 interface User {
@@ -51,12 +53,15 @@ interface Task {
 
 interface ShowProps {
   task: Task;
+  projects: Project[];
+  users: User[];
 }
 
 // Define allowed badge variants based on the ShadCN UI implementation
 type BadgeVariant = 'destructive' | 'secondary' | 'outline' | 'default';
 
-export default function Show({ task }: ShowProps) {
+export default function Show({ task, projects, users }: ShowProps) {
+  const [open, setOpen] = useState(false);
   const { delete: destroy } = useForm();
 
   const handleDelete = () => {
@@ -85,9 +90,26 @@ export default function Show({ task }: ShowProps) {
               </Badge>
             </div>
             <div className="flex space-x-2">
-              <Link href={route('tasks.edit', task.id)}>
-                <Button variant="outline">Edit</Button>
-              </Link>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <PencilIcon className="mr-2 h-4 w-4" />
+                    Edit
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
+                  <DialogHeader>
+                    <DialogTitle>Edit Task: {task.title}</DialogTitle>
+                    <DialogDescription>Make changes to your task here.</DialogDescription>
+                  </DialogHeader>
+                  <EditTaskForm
+                    task={task}
+                    projects={projects}
+                    users={users}
+                    onSuccess={() => setOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
               <Button variant="destructive" onClick={handleDelete}>Delete</Button>
             </div>
           </div>

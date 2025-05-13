@@ -32,9 +32,11 @@ class BoardController extends Controller
     public function index()
     {
         $boards = $this->boardService->getAllBoards();
+        $projects = \App\Models\Project::all();
         
         return inertia('boards/index', [
-            'boards' => $boards
+            'boards' => $boards,
+            'projects' => $projects
         ]);
     }
 

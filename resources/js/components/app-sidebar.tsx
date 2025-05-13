@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, router } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Kanban, ClipboardList, FolderKanban } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Kanban, ClipboardList, FolderKanban, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -12,6 +12,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Teams',
+        href: route('teams.index'),
+        icon: Users,
     },
     {
         title: 'Projects',

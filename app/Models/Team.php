@@ -23,6 +23,16 @@ class Team extends Model
     {
         return $this->belongsToMany(User::class);
     }
+    
+    /**
+     * Get the members (users) that belong to the team with their roles.
+     */
+    public function members()
+    {
+        return $this->belongsToMany(User::class)
+                    ->withPivot('role')
+                    ->withTimestamps();
+    }
 
     /**
      * Get the projects for the team.

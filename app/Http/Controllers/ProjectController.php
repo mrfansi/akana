@@ -32,9 +32,11 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = $this->projectService->getAllProjects();
+        $teams = \App\Models\Team::all();
         
         return inertia('projects/index', [
-            'projects' => $projects
+            'projects' => $projects,
+            'teams' => $teams
         ]);
     }
 

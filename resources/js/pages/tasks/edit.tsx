@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,7 +9,8 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import AppLayout from '@/layouts/app-layout';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, PencilIcon } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 
 // Define types
 interface User {
@@ -56,6 +56,7 @@ interface TaskFormData {
 }
 
 export default function Edit({ task, projects, users }: EditProps) {
+  const [open, setOpen] = useState(false);
   const { data, setData, put, processing, errors } = useForm<TaskFormData>({
     title: task.title || '',
     description: task.description || '',
@@ -68,9 +69,18 @@ export default function Edit({ task, projects, users }: EditProps) {
     actual_hours: task.actual_hours?.toString() || '',
   });
 
+  // Open the dialog when the component mounts
+  useEffect(() => {
+    setOpen(true);
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    put(route('tasks.update', task.id));
+    put(route('tasks.update', task.id), {
+      onSuccess: () => {
+        setOpen(false);
+      }
+    });
   };
 
   return (
@@ -80,16 +90,24 @@ export default function Edit({ task, projects, users }: EditProps) {
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center space-x-4">
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Task Details</h1>
+            <div className="flex space-x-2">
               <Link href={route('tasks.show', task.id)}>
-                <Button variant="outline" size="sm">Back to Task</Button>
+                <Button variant="outline" size="sm">View Task</Button>
               </Link>
-              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Edit Task</h1>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-            <form onSubmit={handleSubmit}>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <PencilIcon className="mr-2 h-4 w-4" />
+                    Edit Task
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
+                  <DialogHeader>
+                    <DialogTitle>Edit Task: {task.title}</DialogTitle>
+                    <DialogDescription>Make changes to your task here.</DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleSubmit} className="px-4">
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
@@ -252,14 +270,17 @@ export default function Edit({ task, projects, users }: EditProps) {
                   {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
                 </div>
 
-                <div className="flex justify-end space-x-2">
-                  <Link href={route('tasks.show', task.id)}>
+                <div className="flex justify-end space-x-2 mt-6">
+                  <DialogClose asChild>
                     <Button variant="outline" type="button">Cancel</Button>
-                  </Link>
+                  </DialogClose>
                   <Button type="submit" disabled={processing}>Update Task</Button>
                 </div>
               </div>
             </form>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
       </div>

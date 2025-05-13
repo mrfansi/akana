@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import CreateBoardForm from './components/create-board-form';
+
+import { PlusIcon } from 'lucide-react';
 
 // Create custom icon component
 const ViewColumnsIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -39,9 +43,11 @@ interface Board {
 
 interface IndexProps {
   boards: Board[];
+  projects: Project[];
 }
 
-export default function Index({ boards }: IndexProps) {
+export default function Index({ boards, projects }: IndexProps) {
+  const [open, setOpen] = useState(false);
   return (
     <AppLayout>
       <Head title="Boards" />
@@ -50,9 +56,24 @@ export default function Index({ boards }: IndexProps) {
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Kanban Boards</h1>
-            <Link href={route('boards.create')}>
-              <Button>Create Board</Button>
-            </Link>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <PlusIcon className="mr-2 h-4 w-4" />
+                  Create Board
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
+                <DialogHeader>
+                  <DialogTitle>Create New Board</DialogTitle>
+                  <DialogDescription>Fill out the form below to create a new board.</DialogDescription>
+                </DialogHeader>
+                <CreateBoardForm
+                  projects={projects}
+                  onSuccess={() => setOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
 
           {boards.length === 0 ? (
