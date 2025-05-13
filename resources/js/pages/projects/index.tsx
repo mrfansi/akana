@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
 import { CalendarIcon, Users as UsersIcon, PlusIcon } from 'lucide-react';
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 // Define types
 interface Team {
@@ -47,23 +47,32 @@ export default function Index({ projects }: IndexProps) {
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Projects</h1>
-            <Drawer open={open} onOpenChange={setOpen}>
-              <DrawerTrigger asChild>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
                 <Button>
                   <PlusIcon className="mr-2 h-4 w-4" />
                   Create Project
                 </Button>
-              </DrawerTrigger>
-              <DrawerContent>
-                <DrawerHeader>
-                  <DrawerTitle>Create New Project</DrawerTitle>
-                  <DrawerDescription>Fill out the form below to create a new project.</DrawerDescription>
-                </DrawerHeader>
-                <div className="px-4">
-                  <iframe src={route('projects.create')} className="w-full h-[80vh] border-none" />
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto p-0">
+                <DialogHeader className="px-6 pt-6 pb-2">
+                  <DialogTitle>Create New Project</DialogTitle>
+                  <DialogDescription>Fill out the form below to create a new project.</DialogDescription>
+                </DialogHeader>
+                <div className="p-0 h-full">
+                  <iframe src={route('projects.create')} className="w-full h-[70vh] border-none" onLoad={(e) => {
+                    // Attempt to communicate with the iframe content
+                    const iframe = e.currentTarget;
+                    try {
+                      // Send a message to the iframe to indicate it's embedded
+                      iframe.contentWindow?.postMessage('embedded-in-dialog', '*');
+                    } catch (err) {
+                      console.error('Error communicating with iframe:', err);
+                    }
+                  }} />
                 </div>
-              </DrawerContent>
-            </Drawer>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {projects.length === 0 ? (

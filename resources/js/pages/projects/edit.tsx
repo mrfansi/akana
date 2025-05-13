@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { format } from 'date-fns';
 import AppLayout from '@/layouts/app-layout';
 import { CalendarIcon, PencilIcon } from 'lucide-react';
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 // Define types
 interface Team {
@@ -77,18 +77,18 @@ export default function Edit({ project, teams }: EditProps) {
               <Link href={route('projects.show', project.id)}>
                 <Button variant="outline" size="sm">View Project</Button>
               </Link>
-              <Drawer open={open} onOpenChange={setOpen}>
-                <DrawerTrigger asChild>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
                   <Button>
                     <PencilIcon className="mr-2 h-4 w-4" />
                     Edit Project
                   </Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                  <DrawerHeader>
-                    <DrawerTitle>Edit Project: {project.name}</DrawerTitle>
-                    <DrawerDescription>Make changes to your project here.</DrawerDescription>
-                  </DrawerHeader>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
+                  <DialogHeader>
+                    <DialogTitle>Edit Project: {project.name}</DialogTitle>
+                    <DialogDescription>Make changes to your project here.</DialogDescription>
+                  </DialogHeader>
                   <form onSubmit={handleSubmit} className="px-4">
                     <div className="space-y-6">
                       <div className="grid grid-cols-1 gap-6">
@@ -220,20 +220,20 @@ export default function Edit({ project, teams }: EditProps) {
                       </div>
 
                       <div className="flex justify-end space-x-2">
-                        <DrawerClose asChild>
+                        <DialogClose asChild>
                           <Button variant="outline" type="button">Cancel</Button>
-                        </DrawerClose>
+                        </DialogClose>
                         <Button type="submit" disabled={processing}>Update Project</Button>
                       </div>
                     </div>
                   </form>
-                  <DrawerFooter className="pt-2">
-                    <DrawerClose asChild>
+                  <DialogFooter className="pt-2">
+                    <DialogClose asChild>
                       <Button variant="outline">Close</Button>
-                    </DrawerClose>
-                  </DrawerFooter>
-                </DrawerContent>
-              </Drawer>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>

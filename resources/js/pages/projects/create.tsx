@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { format } from 'date-fns';
 import AppLayout from '@/layouts/app-layout';
 import { CalendarIcon, Plus } from 'lucide-react';
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 // Define types
 interface Team {
@@ -33,8 +33,21 @@ interface ProjectFormData {
 }
 
 export default function Create({ teams }: CreateProps) {
-  // Check if this page is being loaded in an iframe (embedded in a drawer)
+  // Check if this page is being loaded in an iframe (embedded in a dialog)
   const isEmbedded = window.self !== window.top;
+  
+  // Listen for messages from the parent window
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // If we receive a message indicating we're embedded in a dialog
+      if (event.data === 'embedded-in-dialog') {
+        setOpen(true);
+      }
+    };
+    
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
   const [open, setOpen] = useState(!isEmbedded);
   const { data, setData, post, processing, errors, reset } = useForm<ProjectFormData>({
     name: '',
@@ -65,7 +78,8 @@ export default function Create({ teams }: CreateProps) {
       // When embedded in iframe, just show the form
       <>
         <Head title="Create Project" />
-        <form onSubmit={handleSubmit} className="p-4">
+        <form onSubmit={handleSubmit} className="p-6">
+          {/* When embedded in a dialog, we need to make sure the form fits properly */}
           <div className="space-y-6">
             <div className="grid grid-cols-1 gap-6">
               <div className="space-y-4">
@@ -90,11 +104,11 @@ export default function Create({ teams }: CreateProps) {
                       <SelectValue placeholder="Select a team" />
                     </SelectTrigger>
                     <SelectContent>
-                      {teams.map((team) => (
+                      {teams?.map((team) => (
                         <SelectItem key={team.id} value={team.id.toString()}>
                           {team.name}
                         </SelectItem>
-                      ))}
+                      )) || <SelectItem value="no-team">No teams available</SelectItem>}
                     </SelectContent>
                   </Select>
                   {errors.team_id && <p className="text-red-500 text-sm mt-1">{errors.team_id}</p>}
@@ -199,18 +213,18 @@ export default function Create({ teams }: CreateProps) {
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Projects</h1>
-              <Drawer open={open} onOpenChange={setOpen}>
-                <DrawerTrigger asChild>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
                   <Button>
                     <Plus className="mr-2 h-4 w-4" />
                     Create Project
                   </Button>
-                </DrawerTrigger>
-                <DrawerContent>
-                  <DrawerHeader>
-                    <DrawerTitle>Create New Project</DrawerTitle>
-                    <DrawerDescription>Fill in the details to create a new project.</DrawerDescription>
-                  </DrawerHeader>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
+                  <DialogHeader>
+                    <DialogTitle>Create New Project</DialogTitle>
+                    <DialogDescription>Fill in the details to create a new project.</DialogDescription>
+                  </DialogHeader>
                   <form onSubmit={handleSubmit} className="px-4">
                     <div className="space-y-6">
                       <div className="grid grid-cols-1 gap-6">
@@ -236,11 +250,11 @@ export default function Create({ teams }: CreateProps) {
                                 <SelectValue placeholder="Select a team" />
                               </SelectTrigger>
                               <SelectContent>
-                                {teams.map((team) => (
+                                {teams?.map((team) => (
                                   <SelectItem key={team.id} value={team.id.toString()}>
                                     {team.name}
                                   </SelectItem>
-                                ))}
+                                )) || <SelectItem value="no-team">No teams available</SelectItem>}
                               </SelectContent>
                             </Select>
                             {errors.team_id && <p className="text-red-500 text-sm mt-1">{errors.team_id}</p>}
@@ -332,15 +346,15 @@ export default function Create({ teams }: CreateProps) {
                         </div>
                       </div>
                       <div className="flex justify-end space-x-2 mt-6">
-                        <DrawerClose asChild>
+                        <DialogClose asChild>
                           <Button variant="outline" type="button">Cancel</Button>
-                        </DrawerClose>
+                        </DialogClose>
                         <Button type="submit" disabled={processing}>Create Project</Button>
                       </div>
                     </div>
                   </form>
-                </DrawerContent>
-              </Drawer>
+                </DialogContent>
+              </Dialog>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
