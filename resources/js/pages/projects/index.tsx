@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
-import { CalendarIcon, Users as UsersIcon, PlusIcon } from 'lucide-react';
+import { CalendarIcon, Users as UsersIcon, PlusIcon, EyeIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import CreateProjectForm from './components/create-project-form';
+import ViewProjectDialog from './components/view-project-dialog';
 
 // Define types
 interface Team {
@@ -25,7 +26,9 @@ interface Project {
   description?: string;
   status?: string;
   team?: Team;
+  team_id?: string;
   tasks?: Task[];
+  boards?: { id: number; name: string; description?: string; }[];
   start_date?: string;
   end_date?: string;
 }
@@ -76,42 +79,52 @@ export default function Index({ projects, teams }: IndexProps) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project) => (
-                <Link key={project.id} href={route('projects.show', project.id)} className="block">
-                  <Card className="h-full hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <CardTitle className="text-lg">{project.name}</CardTitle>
-                        <Badge variant={getStatusBadgeVariant(project.status)}>
-                          {project.status || 'No Status'}
-                        </Badge>
-                      </div>
-                      <CardDescription>
-                        {project.team?.name || 'No Team'}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                        {project.description || 'No description provided.'}
-                      </p>
-                    </CardContent>
-                    <CardFooter className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center">
-                        <UsersIcon className="h-4 w-4 mr-1" />
-                        {project.tasks?.length || 0} tasks
-                      </div>
-                      <div className="flex items-center">
-                        <CalendarIcon className="h-4 w-4 mr-1" />
-                        {project.start_date && project.end_date ? (
-                          <span>
-                            {new Date(project.start_date).toLocaleDateString()} - {new Date(project.end_date).toLocaleDateString()}
-                          </span>
-                        ) : (
-                          'No dates set'
-                        )}
-                      </div>
-                    </CardFooter>
-                  </Card>
-                </Link>
+                <div key={project.id}>
+                  <ViewProjectDialog
+                    project={project}
+                    trigger={
+                      <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
+                        <CardHeader>
+                          <div className="flex justify-between items-start">
+                            <div className="flex justify-between w-full">
+                              <CardTitle className="text-lg">{project.name}</CardTitle>
+                              <EyeIcon className="h-5 w-5 text-gray-400" />
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <CardDescription>
+                              {project.team?.name || 'No Team'}
+                            </CardDescription>
+                            <Badge variant={getStatusBadgeVariant(project.status)}>
+                              {project.status || 'No Status'}
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                            {project.description || 'No description provided.'}
+                          </p>
+                        </CardContent>
+                        <CardFooter className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                          <div className="flex items-center">
+                            <UsersIcon className="h-4 w-4 mr-1" />
+                            {project.tasks?.length || 0} tasks
+                          </div>
+                          <div className="flex items-center">
+                            <CalendarIcon className="h-4 w-4 mr-1" />
+                            {project.start_date && project.end_date ? (
+                              <span>
+                                {new Date(project.start_date).toLocaleDateString()} - {new Date(project.end_date).toLocaleDateString()}
+                              </span>
+                            ) : (
+                              'No dates set'
+                            )}
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    }
+                  />
+                </div>
               ))}
             </div>
           )}

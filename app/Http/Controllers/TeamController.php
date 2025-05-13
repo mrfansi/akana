@@ -51,9 +51,12 @@ class TeamController extends Controller
             'description' => 'nullable|string',
         ]);
 
+        // Add the current user as the owner
+        $validated['owner_id'] = Auth::id();
+        
         $team = Team::create($validated);
 
-        // Add the current user as the team owner
+        // Add the current user as the team owner in the pivot table
         $team->members()->attach(Auth::id(), ['role' => 'owner']);
 
         return redirect()->route('teams.show', $team->id)

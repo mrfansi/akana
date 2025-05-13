@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
-import { PlusIcon, Users as UsersIcon } from 'lucide-react';
+import { PlusIcon, Users as UsersIcon, EyeIcon } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import CreateTeamForm from './components/create-team-form';
+import ViewTeamDialog from './components/view-team-dialog';
 
 // Define types for the team data
 interface User {
   id: number;
   name: string;
   email: string;
+  role?: string;
+}
+
+interface Project {
+  id: number;
+  name: string;
 }
 
 interface Team {
   id: number;
   name: string;
   description?: string;
-  members_count: number;
-  members?: User[];
+  members_count?: number;
+  members: User[];
+  projects?: Project[];
 }
 
 interface IndexProps {
@@ -62,24 +70,36 @@ export default function Index({ teams }: IndexProps) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {teams && teams.map((team) => (
-                <Link key={team.id} href={route('teams.show', team.id)} className="block">
-                  <Card className="h-full hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{team.name}</CardTitle>
-                      <CardDescription>
-                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                          <UsersIcon className="h-4 w-4 mr-1" />
-                          {team.members_count} {team.members_count === 1 ? 'member' : 'members'}
-                        </div>
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
-                        {team.description || 'No description provided.'}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <div key={team.id}>
+                  <ViewTeamDialog
+                    team={{
+                      ...team,
+                      members: team.members || [],
+                    }}
+                    availableUsers={[]}
+                    trigger={
+                      <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
+                        <CardHeader>
+                          <div className="flex justify-between">
+                            <CardTitle className="text-lg">{team.name}</CardTitle>
+                            <EyeIcon className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <CardDescription>
+                            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                              <UsersIcon className="h-4 w-4 mr-1" />
+                              {team.members_count || 0} {(team.members_count || 0) === 1 ? 'member' : 'members'}
+                            </div>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                            {team.description || 'No description provided.'}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    }
+                  />
+                </div>
               ))}
             </div>
           )}
