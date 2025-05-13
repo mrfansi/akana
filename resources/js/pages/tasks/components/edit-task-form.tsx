@@ -104,11 +104,11 @@ export default function EditTaskForm({ task, projects, users, onSuccess }: EditT
                   <SelectValue placeholder="Select a project" />
                 </SelectTrigger>
                 <SelectContent>
-                  {projects.map((project) => (
+                  {projects?.map((project) => (
                     <SelectItem key={project.id} value={project.id.toString()}>
                       {project.name}
                     </SelectItem>
-                  ))}
+                  )) || <SelectItem value="">No projects available</SelectItem>}
                 </SelectContent>
               </Select>
               {errors.project_id && <p className="text-red-500 text-sm mt-1">{errors.project_id}</p>}

@@ -89,11 +89,11 @@ export default function CreateTaskForm({ projects, users, onSuccess }: CreateTas
                   <SelectValue placeholder="Select a project" />
                 </SelectTrigger>
                 <SelectContent>
-                  {projects.map((project) => (
+                  {projects?.map((project) => (
                     <SelectItem key={project.id} value={project.id.toString()}>
                       {project.name}
                     </SelectItem>
-                  ))}
+                  )) || <SelectItem value="">No projects available</SelectItem>}
                 </SelectContent>
               </Select>
               {errors.project_id && <p className="text-red-500 text-sm mt-1">{errors.project_id}</p>}
@@ -109,11 +109,11 @@ export default function CreateTaskForm({ projects, users, onSuccess }: CreateTas
                   <SelectValue placeholder="Select an assignee" />
                 </SelectTrigger>
                 <SelectContent>
-                  {users.map((user) => (
+                  {users?.map((user) => (
                     <SelectItem key={user.id} value={user.id.toString()}>
                       {user.name}
                     </SelectItem>
-                  ))}
+                  )) || <SelectItem value="">No users available</SelectItem>}
                 </SelectContent>
               </Select>
               {errors.assignee_id && <p className="text-red-500 text-sm mt-1">{errors.assignee_id}</p>}
